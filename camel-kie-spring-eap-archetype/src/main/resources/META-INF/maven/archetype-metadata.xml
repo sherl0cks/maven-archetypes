@@ -67,6 +67,12 @@
             <include>**/*.java</include>
           </includes>
         </fileSet>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/test/resources</directory>
+          <includes>
+            <include>**/*.xml</include>
+          </includes>
+        </fileSet>
       </fileSets>
     </module>
     <module id="${rootArtifactId}-properties" dir="__rootArtifactId__-properties" name="${rootArtifactId}-properties">
