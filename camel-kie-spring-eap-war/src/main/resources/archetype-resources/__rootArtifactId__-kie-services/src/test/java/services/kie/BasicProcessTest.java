@@ -6,7 +6,7 @@ package ${package}.services.kie;
 import org.junit.Assert;
 import org.junit.Test;
 
-import ${package}.kie.component.EciKieResponse;
+import ${package}.kie.component.KieResponse;
 import ${package}.test.support.AbstractKieSpringTestSupport;
 
 public class BasicProcessTest extends AbstractKieSpringTestSupport {

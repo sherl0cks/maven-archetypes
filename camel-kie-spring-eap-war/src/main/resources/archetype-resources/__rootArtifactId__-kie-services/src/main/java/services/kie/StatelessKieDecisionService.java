@@ -60,7 +60,7 @@ public class StatelessKieDecisionService implements StatelessDecisionService {
 		}
 		// this is used capture the enrichments run in the service
 		if ( this.isRuleListenerActive() ) {
-			session.addEventListener( kieEnrichmentListener );
+			session.addEventListener( ruleListener );
 		}
 
 		ExecutionResults results = session.execute( batchExecutionCommand );
@@ -69,7 +69,7 @@ public class StatelessKieDecisionService implements StatelessDecisionService {
 
 		// add the listener to the response and delegate the responsibility of
 		// setting the enrichments to BusinesRulesAggregationStrategy
-		if ( responseClazz.equals( KieResponse.class ) && this.ruleListenerActive() ) {
+		if ( responseClazz.equals( KieResponse.class ) && this.isRuleListenerActive() ) {
 			( ( KieResponse ) response ).setRuleListener( ruleListener );
 		}
 

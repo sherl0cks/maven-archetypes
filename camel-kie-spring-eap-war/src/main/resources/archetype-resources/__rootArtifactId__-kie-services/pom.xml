@@ -15,12 +15,10 @@
 			<groupId>${groupId}</groupId>
 			<artifactId>${rootArtifactId}-domain</artifactId>
 		</dependency>
-		<!--
 		<dependency>
 			<groupId>${groupId}</groupId>
-			<artifactId>${rules.artifact}</artifactId>
+			<artifactId>${rootArtifactId}-business-rules</artifactId>
 		</dependency>
-		-->
 		
 		<dependency>
 			<groupId>${groupId}</groupId>

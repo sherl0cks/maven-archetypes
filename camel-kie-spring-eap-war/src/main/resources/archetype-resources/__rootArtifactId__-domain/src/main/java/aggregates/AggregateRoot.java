@@ -3,6 +3,8 @@
 #set( $symbol_escape = '\' )
 package ${package}.aggregates;
 
+import java.util.Collection;
+
 import ${package}.entities.Entity;
 
 /**
@@ -14,4 +16,11 @@ import ${package}.entities.Entity;
  */
 public interface AggregateRoot extends Entity {
 
+	/**
+	 * 
+	 * Aggregates are the boundaries by which we design decision services. This method provides a flat representation of the Aggregate for easier business rules authoring
+	 */
+	public Collection<Object> asCollectionOfFacts();
+
+	
 }

@@ -1,0 +1,12 @@
+package ${package}.rules;
+
+import ${package}.aggregates.*;
+import ${package}.entities.*;
+import ${package}.markers.*;
+import ${package}.vo.*;
+
+query "Get Discounts"
+
+	$discount : Discount();
+		
+end			

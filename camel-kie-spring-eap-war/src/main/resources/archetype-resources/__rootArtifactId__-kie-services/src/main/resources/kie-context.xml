@@ -13,7 +13,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<import resource="classpath:properties-context.xml" />
 
 	<bean id="statelessKieDecisionService" class="${package}.services.kie.StatelessKieDecisionService">
-		<property name="kieEnrichmentListenerActive" value="${symbol_dollar}{kie.enrichment.listener.active}" />
+		<property name="ruleListenerActive" value="${kie.rule.listener.active}" />
 	</bean>
 
 

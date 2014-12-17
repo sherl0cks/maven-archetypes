@@ -25,8 +25,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<rules.version>0.0.1-SNAPSHOT</rules.version>
-		<rules.artifact>${rootArtifactId}-rules</rules.artifact>
+		<!-- The rules will increment at a different rate, so you can tweak that here -->
+		<rules.version>${project.version}</rules.version>
+		
 		<cucumber.version>1.1.5</cucumber.version>
 
 		<!-- BPM Suite Support Documentation https://access.redhat.com/articles/704703 -->
@@ -60,7 +61,7 @@
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
-				<artifactId>${rules.artifact}</artifactId>
+				<artifactId>${rootArtifactId}-business-rules</artifactId>
 				<version>${rules.version}</version>
 			</dependency>
 			<dependency>

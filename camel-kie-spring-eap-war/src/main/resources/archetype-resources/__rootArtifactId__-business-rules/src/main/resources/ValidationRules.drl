@@ -1,0 +1,17 @@
+package ${package}.rules;
+
+import ${package}.aggregates.*;
+import ${package}.entities.*;
+import ${package}.markers.*;
+import ${package}.vo.*;
+
+
+
+rule "Validation - Customer Does Not Have A Valid Address"
+	ruleflow-group "Validation"
+	when 
+		
+	then
+		System.out.println( "validation" );	
+		
+end		

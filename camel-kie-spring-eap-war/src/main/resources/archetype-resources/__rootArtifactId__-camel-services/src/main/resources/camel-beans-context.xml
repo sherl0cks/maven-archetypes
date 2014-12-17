@@ -1,0 +1,32 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:amq="http://activemq.apache.org/schema/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<import resource="classpath*:kie-context.xml" />
+
+	<bean id="statelessDecisionServiceAdapter" class="${package}.StatelessDecisionServiceCamelAdapter">
+		<property name="statelessDecisionService" ref="statelessKieDecisionService" />
+	</bean>
+
+	<bean id="businessRulesAggregationStrategy" class="${package}.BusinessRulesAggregationStrategy" />
+
+
+	<!-- Production -->
+	<beans profile="default">
+		<import resource="classpath:hibernate-context.xml" />
+	</beans>
+
+	<!-- Base Unit Test Configuration -->
+	<beans profile="test">
+		<import resource="classpath:mock-repositories-context.xml" />
+	</beans>
+
+	<!-- Integration Test - will overwrite base unit test config -->
+	<beans profile="integration">
+		<import resource="classpath:hibernate-context.xml" />
+	</beans>
+
+</beans>

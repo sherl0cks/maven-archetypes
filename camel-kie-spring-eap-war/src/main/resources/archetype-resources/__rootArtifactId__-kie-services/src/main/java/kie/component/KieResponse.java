@@ -5,34 +5,33 @@ package ${package}.kie.component;
 
 import java.util.Collection;
 
-import ${package}.entities.IncomingMessageStatuses;
-import ${package}.entities.Message;
-import ${package}.marker.CancelMessageMarker;
-import ${package}.marker.TransactionMarker;
-import ${package}.services.kie.KieEnrichmentListener;
+import ${package}.entities.Discount;
+import ${package}.kie.component.KieQuery;
+import ${package}.services.kie.RuleListener;
+
+import ${package}.services.kie.RuleListener;
 
 public class KieResponse {
 
-	// TODO provide support for an idividual attribute in Kie Query
+	@KieQuery(queryName = "Get Discounts", binding = "$discount")
+	private Collection<Discount> discount;
 
-	@KieQuery( queryName = "Get Strings" , binding = "${symbol_dollar}string" )
-	private Collection< String >					strings;
+	private RuleListener ruleListener;
 
-	private RuleListener					ruleListener;
-
-	public Collection< String > getStrings() {
-		return strings;
+	public Collection<Discount> getDiscount() {
+		return discount;
 	}
 
-	public void setStrings Collection< String > strings ) {
-		this.strings = strings;
+	public void setDiscount(Collection<Discount> discount) {
+		this.discount = discount;
 	}
 
 	public RuleListener getRuleListener() {
 		return ruleListener;
 	}
 
-	public void setRuleListener( RuleListener ruleListener ) {
+	public void setRuleListener(RuleListener ruleListener) {
 		this.ruleListener = ruleListener;
 	}
+	
 }
