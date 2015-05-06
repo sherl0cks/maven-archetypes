@@ -1,0 +1,17 @@
+package com.rhc.rules;
+
+import com.rhc.aggregates.*;
+import com.rhc.entities.*;
+import com.rhc.markers.*;
+import com.rhc.vo.*;
+
+
+
+rule "Validation - Customer Does Not Have A Valid Address"
+	ruleflow-group "Validation"
+	when 
+		
+	then
+		System.out.println( "validation" );	
+		
+end		

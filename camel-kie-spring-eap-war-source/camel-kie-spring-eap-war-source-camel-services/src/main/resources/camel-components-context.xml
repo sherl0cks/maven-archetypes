@@ -1,0 +1,42 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:amq="http://activemq.apache.org/schema/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd ">
+	
+	<!-- production -->
+	<beans profile="default">
+	
+		<bean id="jms" class="org.apache.camel.component.jms.JmsComponent">
+			<property name="configuration" ref="jmsConfig" />
+			<property name="acknowledgementMode" value="1" />
+		</bean>
+
+		<bean id="jmsQueueConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+			<property name="jndiName" value="java:jboss/MQ.CONNECTIONFACTORY.NAME" />
+			<property name="lookupOnStartup" value="true" />
+			<property name="cache" value="true" />
+			<property name="proxyInterface" value="javax.jms.QueueConnectionFactory" />
+		</bean>
+
+		<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
+			<property name="connectionFactory" ref="jmsQueueConnectionFactory" />
+			<property name="includeSentJMSMessageID" value="true" />
+			<property name="maxConcurrentConsumers" value="${jms.max.concurrent.consumers}" />
+			<property name="transacted" value="true" />
+			<property name="transactionManager" ref="jtaTxManager" />
+		</bean>
+
+		<!-- Note, this is only place is declared. The tx manager in hibernate is for tests only. Remove this and create your own transactio nmanage if  -->
+		<bean id="jtaTxManager" class="org.springframework.transaction.jta.JtaTransactionManager" />
+	</beans>
+
+	<!-- There are two options here:
+		1. use spring to manage test queues and add there here to this config. IF you do that, move jms bean definition above the profiles so it can be shared
+		2. move to arquillain
+	  -->
+	<beans profile="test">
+
+
+
+	</beans>
+
+
+</beans>

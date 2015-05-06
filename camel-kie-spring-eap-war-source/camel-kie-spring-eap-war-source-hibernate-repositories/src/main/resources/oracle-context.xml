@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+	<import resource="classpath:properties-context.xml" />
+
+	<!-- add mapping files here -->
+	<util:list id="mappingResources" value-type="java.lang.String">
+
+	</util:list>
+
+	<!-- Define Hibernate Repositories -->
+
+
+	
+	<beans profile="default">
+
+		<bean id="oracleSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+			<property name="dataSource" ref="oracleDataSource" />
+			<!-- JTA Transaction Manager is defined in camel-beans-context.xml. if you do not want JTA, create a Transaction Manager bean here -->
+			<property name="jtaTransactionManager" ref="jtaTxManager" />
+			<property name="mappingResources" ref="mappingResources" />
+			<property name="hibernateProperties">
+				<props>
+					<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+					<prop key="hibernate.default_schema">${oracle.hibernate.default.schema}</prop>
+					<prop key="hibernate.show_sql">${hibernate.show.sql}</prop>
+					<prop key="hibernate.generate_statistics">${hibernate.generate.statistics}</prop>
+				</props>
+			</property>
+		</bean>
+
+		<bean id="oracleDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+			<property name="jndiName" value="java:jboss/datasources/OracleDS" />
+			<property name="lookupOnStartup" value="true" />
+			<property name="cache" value="true" />
+		</bean>
+
+
+
+	</beans>
+
+
+	<beans profile="test">
+
+		<bean id="oracleSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+			<property name="dataSource" ref="oracleDataSource" />
+			<property name="mappingResources" ref="mappingResources" />
+			<property name="hibernateProperties">
+				<props>
+					<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+					<prop key="hibernate.default_schema">${oracle.hibernate.default.schema}</prop>
+					<prop key="hibernate.show_sql">true</prop>
+					<prop key="hibernate.generate_statistics">true</prop>
+					<prop key="jadira.usertype.autoRegisterUserTypes">true</prop>
+					<prop key="jadira.usertype.databaseZone">jvm</prop>
+					<prop key="jadira.usertype.javaZone">jvm</prop>
+				</props>
+			</property>
+		</bean>
+
+		<!-- Not really jta but used in the spring conf, just a naming thing for tests-->
+		<bean id="jtaTxManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+			<property name="sessionFactory" ref="oracleSessionFactory" />
+		</bean>
+
+		<bean id="oracleDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+			<property name="url" value="${oracle.protocol}:${oracle.url}" />
+			<property name="username" value="${oracle.username}" />
+			<property name="password" value="${oracle.password}" />
+		</bean>
+
+		<bean id="dbUtils" class="com.rhc.test.support.DatabaseUtils">
+			<property name="sessionFactory" ref="oracleSessionFactory" />
+		</bean>
+
+	</beans>
+
+</beans>

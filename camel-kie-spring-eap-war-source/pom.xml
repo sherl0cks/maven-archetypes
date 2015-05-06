@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.rhc</groupId>
+    <artifactId>camel-kie-spring-eap-war-source</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+  <modules>
+    <module>camel-kie-spring-eap-war-source-camel-services</module>
+    <module>camel-kie-spring-eap-war-source-domain</module>
+    <module>camel-kie-spring-eap-war-source-properties</module>
+    <module>camel-kie-spring-eap-war-source-hibernate-repositories</module>
+    <module>camel-kie-spring-eap-war-source-kie-services</module>
+    <module>camel-kie-spring-eap-war-source-business-rules</module>
+    <module>camel-kie-spring-eap-war-source-parent</module>
+    <module>camel-kie-spring-eap-war-source-test-harness</module>
+    <module>camel-kie-spring-eap-war-source-war</module>
+  </modules>
+</project>

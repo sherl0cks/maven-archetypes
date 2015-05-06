@@ -1,0 +1,12 @@
+package com.rhc.rules;
+
+import com.rhc.aggregates.*;
+import com.rhc.entities.*;
+import com.rhc.markers.*;
+import com.rhc.vo.*;
+
+query "Get Discounts"
+
+	$discount : Discount();
+		
+end			

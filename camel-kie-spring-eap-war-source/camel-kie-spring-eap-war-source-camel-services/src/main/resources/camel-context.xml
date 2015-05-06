@@ -1,0 +1,65 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:amq="http://activemq.apache.org/schema/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd 
+    http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- spring contexts -->
+	<import resource="classpath:camel-components-context.xml" />
+	<import resource="classpath:camel-beans-context.xml" />
+	<import resource="classpath:properties-context.xml" />
+
+	
+	<camelContext errorHandlerRef="deadLetterHandler" xmlns="http://camel.apache.org/schema/spring">
+		<errorHandler type="DeadLetterChannel" deadLetterUri="seda:DeadLetterErrorHandler" id="deadLetterHandler" />
+		<errorHandler type="TransactionErrorHandler" id="transactionErrorHandler">
+			<redeliveryPolicy maximumRedeliveries="{{redelivery.maximum.attempts}}" redeliveryDelay="{{redelivery.delay.millis}}"
+				asyncDelayedRedelivery="false" retryAttemptedLogLevel="WARN" />
+		</errorHandler>
+		
+		<route id="InboundRoute"> 
+			<from uri="{{inbound.camel.protocol}}:{{inbound.queue.name}}?concurrentConsumers={{inbound.concurrent.consumers}}" />
+			<to uri="bean:customerStageRepository?method=saveOrUpdate" />
+			<to uri="mock:BusinessRules"/>
+		</route>
+		
+		<!--  
+		<route customId="true" id="BusinessRulesRoute">
+			<from uri="seda:BusinessRules" />
+			<enrich uri="bean:statelessDecisionServiceAdapter?method=executeRuleflow" strategyRef="businessRulesAggregationStrategy" customId="true"
+				id="Business Rules Content Enricher" />
+			<split customId="true" id="Message Splitter">
+				<simple>${body}</simple>
+				<choice customId="true" id="Content Based Router">
+					<when customId="true" id="Acknowledgment">
+						<simple>${body.getClass} ==  ${type:com.rhc.entities.OutgoingAcknowledgment}</simple>
+						<to uri="seda:Acknowledgment" />
+					</when>
+					<otherwise>
+						<log message="Otherwise ::: ${body}" loggingLevel="ERROR" />
+					</otherwise>
+				</choice>
+			</split>
+		</route>
+		<route errorHandlerRef="transactionErrorHandler" customId="true" id="OutboundRoute">
+			<from uri="seda:Outbound" />
+			utbound.protocol}}:{{eri.outbound.queue.name}}?concurrentConsumers={{eri.oubound.concurrent.consumers}}" />
+			</split>
+			<to uri="bean:transactionRepository?method=saveOrUpdate" />
+			<onException>
+				<description>OnException cannot be reused https://issues.apache.org/jira/browse/CAMEL-3870</description>
+				<exception>java.lang.Exception</exception>
+				<redeliveryPolicy maximumRedeliveries="{{redelivery.maximum.attempts}}" redeliveryDelay="{{redelivery.delay.millis}}"
+					asyncDelayedRedelivery="true" retryAttemptedLogLevel="WARN" />
+				<handled>
+					<constant>true</constant>
+				</handled>
+				<process ref="exceptionProcessor" />
+				<rollback markRollbackOnly="true" />
+			</onException>
+		</route>
+		-->
+	</camelContext>
+
+</beans>

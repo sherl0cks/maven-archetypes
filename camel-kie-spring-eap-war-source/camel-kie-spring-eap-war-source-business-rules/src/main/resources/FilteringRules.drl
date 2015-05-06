@@ -1,0 +1,17 @@
+package com.rhc.rules;
+
+import com.rhc.aggregates.*;
+import com.rhc.entities.*;
+import com.rhc.markers.*;
+import com.rhc.vo.*;
+
+
+
+rule "Filtering - Only Applicable to Continental United States"
+	ruleflow-group "Filtering"
+	when 
+		
+	then
+		System.out.println( "filtering" );	
+		
+end		
