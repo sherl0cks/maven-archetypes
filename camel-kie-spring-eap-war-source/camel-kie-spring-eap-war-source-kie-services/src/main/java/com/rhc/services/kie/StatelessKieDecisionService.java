@@ -23,16 +23,17 @@ import com.rhc.services.api.StatelessDecisionService;
 
 public class StatelessKieDecisionService implements StatelessDecisionService {
 
-	private static final Logger	LOG	= LoggerFactory.getLogger( StatelessKieDecisionService.class );
+	private static final Logger LOG = LoggerFactory.getLogger(StatelessKieDecisionService.class);
 
-	private KieCommands			commandFactory;
-	private KieContainer		kieContainer;
-	private boolean				ruleListenerActive;
+	private KieCommands commandFactory;
+	private KieContainer kieContainer;
+	private boolean ruleListenerActive;
+	private boolean debugLogging;
 
 	public StatelessKieDecisionService() {
 		kieContainer = KieServices.Factory.get().getKieClasspathContainer();
 		StatelessKieSession statelessKieSession = kieContainer.newStatelessKieSession();
-		LOG.debug( statelessKieSession.getKieBase().toString() );
+		LOG.debug(statelessKieSession.getKieBase().toString());
 
 		/**
 		 * Break point here to find what rules are in the KIE Base
@@ -41,54 +42,54 @@ public class StatelessKieDecisionService implements StatelessDecisionService {
 	}
 
 	@Override
-	public < Response > Response execute( Collection< Object > facts, String processId, Class< Response > responseClazz, String logName ) {
-		BatchExecutionCommand batchExecutionCommand = createBatchExecutionCommand( facts, processId, responseClazz );
+	public <Response> Response execute(Collection<Object> facts, String processId, Class<Response> responseClazz, String logName) {
+		BatchExecutionCommand batchExecutionCommand = createBatchExecutionCommand(facts, processId, responseClazz);
 
 		StatelessKieSession session = kieContainer.newStatelessKieSession();
 		RuleListener ruleListener = new RuleListener();
 
-		if ( logName != null ) {
-			KieServices.Factory.get().getLoggers().newFileLogger( session, logName );
+		if (logName != null) {
+			KieServices.Factory.get().getLoggers().newFileLogger(session, logName);
 		}
 		// this is purely for debugging
-		else if ( LOG.isDebugEnabled() ) {
-			session.addEventListener( new DebugRuleRuntimeEventListener() );
-			session.addEventListener( new DebugAgendaEventListener() );
+		else if (debugLogging) {
+			session.addEventListener(new DebugRuleRuntimeEventListener());
+			session.addEventListener(new DebugAgendaEventListener());
 		}
 		// this is used capture the enrichments run in the service
-		if ( this.isRuleListenerActive() ) {
-			session.addEventListener( ruleListener );
+		if (this.isRuleListenerActive()) {
+			session.addEventListener(ruleListener);
 		}
 
-		ExecutionResults results = session.execute( batchExecutionCommand );
+		ExecutionResults results = session.execute(batchExecutionCommand);
 
-		Response response = ReflectiveExecutionResultsTransformer.transform( results, responseClazz );
+		Response response = ReflectiveExecutionResultsTransformer.transform(results, responseClazz);
 
 		// add the listener to the response and delegate the responsibility of
 		// setting the enrichments to BusinesRulesAggregationStrategy
-		if ( responseClazz.equals( KieResponse.class ) && this.isRuleListenerActive() ) {
-			( ( KieResponse ) response ).setRuleListener( ruleListener );
+		if (responseClazz.equals(KieResponse.class) && this.isRuleListenerActive()) {
+			((KieResponse) response).setRuleListener(ruleListener);
 		}
 
 		return response;
 	}
 
-	public BatchExecutionCommand createBatchExecutionCommand( Collection< Object > facts, String processId, Class< ? > responseClazz ) {
-		List< Command< ? > > commands = new ArrayList< Command< ? > >();
+	public BatchExecutionCommand createBatchExecutionCommand(Collection<Object> facts, String processId, Class<?> responseClazz) {
+		List<Command<?>> commands = new ArrayList<Command<?>>();
 
-		if ( facts != null ) {
-			commands.add( commandFactory.newInsertElements( facts ) );
+		if (facts != null) {
+			commands.add(commandFactory.newInsertElements(facts));
 		}
-		if ( processId != null && !processId.isEmpty() ) {
-			commands.add( commandFactory.newStartProcess( processId ) );
+		if (processId != null && !processId.isEmpty()) {
+			commands.add(commandFactory.newStartProcess(processId));
 		}
 
-		commands.add( commandFactory.newFireAllRules() );
+		commands.add(commandFactory.newFireAllRules());
 
 		// creates commands to run the queries at the end of process
-		commands.addAll( QueryUtils.buildQueryCommands( responseClazz ) );
+		commands.addAll(QueryUtils.buildQueryCommands(responseClazz));
 
-		return commandFactory.newBatchExecution( commands );
+		return commandFactory.newBatchExecution(commands);
 	}
 
 	public KieContainer getKieContainer() {
@@ -96,26 +97,34 @@ public class StatelessKieDecisionService implements StatelessDecisionService {
 	}
 
 	@Override
-	public < Response > Response execute( Collection< Object > facts, String processId, Class< Response > responseClazz ) {
-		return execute( facts, processId, responseClazz, null );
+	public <Response> Response execute(Collection<Object> facts, String processId, Class<Response> responseClazz) {
+		return execute(facts, processId, responseClazz, null);
 	}
 
 	@Override
-	public < Response > Response execute( Collection< Object > facts, String processId, String logName ) {
-		return execute( facts, processId, null, logName );
+	public <Response> Response execute(Collection<Object> facts, String processId, String logName) {
+		return execute(facts, processId, null, logName);
 	}
 
 	@Override
-	public < Response > Response execute( Collection< Object > facts, Class< Response > responseClazz ) {
-		return execute( facts, null, responseClazz, null );
+	public <Response> Response execute(Collection<Object> facts, Class<Response> responseClazz) {
+		return execute(facts, null, responseClazz, null);
 	}
 
 	public boolean isRuleListenerActive() {
 		return ruleListenerActive;
 	}
 
-	public void setRuleListenerActive( boolean ruleListenerActive ) {
+	public void setRuleListenerActive(boolean ruleListenerActive) {
 		this.ruleListenerActive = ruleListenerActive;
+	}
+
+	public boolean isDebugLogging() {
+		return debugLogging;
+	}
+
+	public void setDebugLogging(boolean debugLogging) {
+		this.debugLogging = debugLogging;
 	}
 
 }
