@@ -3,9 +3,6 @@ package com.rhc.kie.component;
 import java.util.Collection;
 
 import com.rhc.entities.Discount;
-import com.rhc.kie.component.KieQuery;
-import com.rhc.services.kie.RuleListener;
-
 import com.rhc.services.kie.RuleListener;
 
 public class KieResponse {

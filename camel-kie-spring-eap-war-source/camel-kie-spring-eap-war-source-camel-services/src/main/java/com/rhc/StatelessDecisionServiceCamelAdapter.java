@@ -1,7 +1,6 @@
 package com.rhc;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import com.rhc.aggregates.Customer;

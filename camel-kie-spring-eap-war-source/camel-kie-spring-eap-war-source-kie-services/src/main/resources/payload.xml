@@ -1,0 +1,6 @@
+<batch-execution lookup="defaultStatelessKieSession">
+	<insert>
+		<org.kie.example.project1.Foo />
+	</insert>
+	<fire-all-rules />
+</batch-execution>
