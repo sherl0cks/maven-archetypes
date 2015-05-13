@@ -15,6 +15,8 @@ import org.kie.server.api.model.ServiceResponse.ResponseType;
 import org.kie.server.client.KieServicesClient;
 import org.kie.server.client.KieServicesConfiguration;
 import org.kie.server.client.KieServicesFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rhc.kie.component.QueryUtils;
 import com.rhc.kie.component.ReflectiveExecutionResultsTransformer;
@@ -23,13 +25,15 @@ import com.thoughtworks.xstream.XStream;
 
 public class StatelessRemoteKieDecisionService implements StatelessDecisionService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(StatelessRemoteKieDecisionService.class);
+
 	private String containerId;
 
 	private KieCommands commandFactory;
 	private KieServicesClient client;
 	private XStream xstream;
-	
-	public StatelessRemoteKieDecisionService( String httpUrl, String userName, String password, int timeout, String containerId) {
+
+	public StatelessRemoteKieDecisionService(String httpUrl, String userName, String password, int timeout, String containerId) {
 		KieServicesConfiguration config;
 		if (timeout == 0) {
 			config = KieServicesFactory.newRestConfiguration(httpUrl, userName, password);
@@ -48,20 +52,20 @@ public class StatelessRemoteKieDecisionService implements StatelessDecisionServi
 
 		String payload = xstream.toXML(batchExecutionCommand);
 
-		System.out.println( payload );
-		
-		ServiceResponse<String> reply = client.executeCommands(containerId, payload);
-		if ( reply.getType().equals(ResponseType.FAILURE )){
-			System.err.println( reply );
-			throw new RuntimeException( "it broke!!" );
-		}
-		
-		System.err.println( reply );
-		
-		ExecutionResults results = (ExecutionResults) xstream.fromXML( reply.getResult() );
+		System.out.println(payload);
 
-		System.out.println( results.getIdentifiers() );
-		
+		ServiceResponse<String> reply = client.executeCommands(containerId, payload);
+		if (reply.getType().equals(ResponseType.FAILURE)) {
+			System.err.println(reply);
+			throw new RuntimeException("it broke!!");
+		}
+
+		System.err.println(reply);
+
+		ExecutionResults results = (ExecutionResults) xstream.fromXML(reply.getResult());
+
+		System.out.println(results.getIdentifiers());
+
 		Response response = ReflectiveExecutionResultsTransformer.transform(results, responseClazz);
 
 		return response;
