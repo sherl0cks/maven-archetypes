@@ -27,6 +27,7 @@ public class StatelessRemoteKieDecisionService implements StatelessDecisionServi
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatelessRemoteKieDecisionService.class);
 
+	private String httpUrl;
 	private String containerId;
 
 	private KieCommands commandFactory;
@@ -42,6 +43,7 @@ public class StatelessRemoteKieDecisionService implements StatelessDecisionServi
 		}
 		this.client = KieServicesFactory.newKieServicesClient(config);
 		this.containerId = containerId;
+		this.httpUrl = httpUrl;
 		commandFactory = KieServices.Factory.get().getCommands();
 		xstream = BatchExecutionHelper.newXStreamMarshaller();
 	}
@@ -52,19 +54,17 @@ public class StatelessRemoteKieDecisionService implements StatelessDecisionServi
 
 		String payload = xstream.toXML(batchExecutionCommand);
 
-		System.out.println(payload);
+		LOGGER.info(String.format("Remote BRMS request to %s/%s with below payload: \n %s",  httpUrl , containerId, payload));
 
 		ServiceResponse<String> reply = client.executeCommands(containerId, payload);
 		if (reply.getType().equals(ResponseType.FAILURE)) {
-			System.err.println(reply);
-			throw new RuntimeException("it broke!!");
+			LOGGER.error(reply.toString());
+			throw new RuntimeException(reply.getMsg());
 		}
 
-		System.err.println(reply);
+		LOGGER.info(reply.getResult());
 
 		ExecutionResults results = (ExecutionResults) xstream.fromXML(reply.getResult());
-
-		System.out.println(results.getIdentifiers());
 
 		Response response = ReflectiveExecutionResultsTransformer.transform(results, responseClazz);
 
@@ -102,6 +102,11 @@ public class StatelessRemoteKieDecisionService implements StatelessDecisionServi
 	@Override
 	public <Response> Response execute(Collection<Object> facts, Class<Response> responseClazz) {
 		return execute(facts, null, responseClazz, null);
+	}
+
+	@Override
+	public boolean upgradeRulesToVersion(String group, String artifact, String version) {
+		return false;
 	}
 
 }

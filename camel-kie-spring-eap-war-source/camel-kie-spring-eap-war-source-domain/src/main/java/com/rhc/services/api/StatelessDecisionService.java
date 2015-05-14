@@ -11,5 +11,7 @@ public interface StatelessDecisionService {
 	public < Response > Response execute( Collection<Object> facts, String processId, String logName );
 	
 	public < Response > Response execute( Collection<Object> facts, Class< Response > responseClazz );
+	
+	public boolean upgradeRulesToVersion( String group, String artifact, String version );
 
 }

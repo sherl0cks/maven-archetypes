@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.command.KieCommands;
@@ -23,7 +27,7 @@ import com.rhc.services.api.StatelessDecisionService;
 
 public class StatelessKieDecisionService implements StatelessDecisionService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StatelessKieDecisionService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StatelessKieDecisionService.class);
 
 	private KieCommands commandFactory;
 	private KieContainer kieContainer;
@@ -32,8 +36,12 @@ public class StatelessKieDecisionService implements StatelessDecisionService {
 
 	public StatelessKieDecisionService() {
 		kieContainer = KieServices.Factory.get().getKieClasspathContainer();
-		StatelessKieSession statelessKieSession = kieContainer.newStatelessKieSession();
-		LOG.debug(statelessKieSession.getKieBase().toString());
+		try {
+			StatelessKieSession statelessKieSession = kieContainer.newStatelessKieSession();
+			LOGGER.debug(statelessKieSession.getKieBase().toString());
+		} catch (Exception e) {
+			LOGGER.warn("There is no KieModule on the classpath. Upgrade the KieContainer to a valid KieModule to fire rules");
+		}
 
 		/**
 		 * Break point here to find what rules are in the KIE Base
@@ -43,9 +51,16 @@ public class StatelessKieDecisionService implements StatelessDecisionService {
 
 	@Override
 	public <Response> Response execute(Collection<Object> facts, String processId, Class<Response> responseClazz, String logName) {
+		StatelessKieSession session;
+		try {
+			session = kieContainer.newStatelessKieSession();
+		} catch (Exception e) {
+			LOGGER.error("The KieContainer is empty; Upgrade the KieContainer to a valid KieModule to fire rules");
+			return null;
+		}
+		
 		BatchExecutionCommand batchExecutionCommand = createBatchExecutionCommand(facts, processId, responseClazz);
 
-		StatelessKieSession session = kieContainer.newStatelessKieSession();
 		RuleListener ruleListener = new RuleListener();
 
 		if (logName != null) {
@@ -90,6 +105,25 @@ public class StatelessKieDecisionService implements StatelessDecisionService {
 		commands.addAll(QueryUtils.buildQueryCommands(responseClazz));
 
 		return commandFactory.newBatchExecution(commands);
+	}
+
+	@Override
+	public boolean upgradeRulesToVersion(String group, String artifact, String version) {
+		ReleaseId releaseId = KieServices.Factory.get().newReleaseId(group, artifact, version);
+		Results results = null;
+		try {
+			results = kieContainer.updateToVersion(releaseId);
+		} catch (UnsupportedOperationException e) {
+			LOGGER.info("project started with classpath container, creating new container for" + releaseId.toString());
+			try {
+				kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
+				results = kieContainer.updateToVersion(releaseId);
+			} catch (Exception e2) {
+				return false;
+			}
+		}
+
+		return results.getMessages().size() == 0;
 	}
 
 	public KieContainer getKieContainer() {

@@ -12,6 +12,6 @@ rule "Validation - Customer Does Not Have A Valid Address"
 	when 
 		
 	then
-		System.out.println( "validation" );	
+		System.out.println( "validation \n\n\n\n This is v 1.1 \n\n\n\n" );	
 		
 end		
