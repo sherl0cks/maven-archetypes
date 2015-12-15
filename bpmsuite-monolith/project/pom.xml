@@ -5,4 +5,81 @@
 	<artifactId>bpmsuite-monolith</artifactId>
 	<version>6.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+
+	<modules>
+		<module>bpmsuite-monolith-web</module>
+		<module>bpmsuite-monolith-business-services</module>
+		<module>bpmsuite-monolith-workitem-handlers</module>
+		<module>bpmsuite-monolith-bpm-runtime</module>
+		<module>bpmsuite-monolith-repositories</module>
+		<module>bpmsuite-monolith-language</module>
+		<module>bpmsuite-monolith-knowledge</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.rhc</groupId>
+				<artifactId>bxms-bill-of-materials</artifactId>
+				<version>6.2.0-SNAPSHOT</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>com.rhc</groupId>
+				<artifactId>bpmsuite-monolith-web</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.rhc</groupId>
+				<artifactId>bpmsuite-monolith-business-services</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.rhc</groupId>
+				<artifactId>bpmsuite-monolith-workitem-handlers</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.rhc</groupId>
+				<artifactId>bpmsuite-monolith-bpm-runtime</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.rhc</groupId>
+				<artifactId>bpmsuite-monolith-repositories</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.rhc</groupId>
+				<artifactId>bpmsuite-monolith-language</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.rhc</groupId>
+				<artifactId>bpmsuite-monolith-knowledge</artifactId>
+				<version>${project.version}</version>
+			</dependency>			
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
 </project>
