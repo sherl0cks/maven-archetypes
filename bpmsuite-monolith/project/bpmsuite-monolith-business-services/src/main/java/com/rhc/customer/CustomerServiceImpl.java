@@ -1,6 +1,8 @@
 package com.rhc.customer;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.services.api.DeploymentService;
@@ -31,7 +33,11 @@ public class CustomerServiceImpl implements CustomerService {
 
 		ensureCustomerKieJarIsDeploy();
 
-		Long processId = processService.startProcess(DEPLOYMENT_UNIT.getIdentifier(), CUSTOMER_ONBOARD_PROCESS_ID);
+		Map<String, Object> processVariables = new HashMap<String, Object>();
+		processVariables.put("CustomerFirstName", firstName);
+		processVariables.put("CustomerLastName", lastName);
+
+		Long processId = processService.startProcess(DEPLOYMENT_UNIT.getIdentifier(), CUSTOMER_ONBOARD_PROCESS_ID, processVariables);
 		return processId;
 	}
 
