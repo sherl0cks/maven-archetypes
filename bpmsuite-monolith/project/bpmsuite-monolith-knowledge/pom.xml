@@ -7,6 +7,7 @@
 	</parent>
 
 	<artifactId>bpmsuite-monolith-knowledge</artifactId>
+	<packaging>kjar</packaging>
 
 	<dependencies>
 		<dependency>
@@ -14,4 +15,16 @@
 			<artifactId>bpmsuite-monolith-language</artifactId>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.kie</groupId>
+				<artifactId>kie-maven-plugin</artifactId>
+				<version>6.3.0.Final-redhat-5</version>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+	
 </project>

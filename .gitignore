@@ -4,3 +4,4 @@ target
 .classpath
 test-output
 .tern-project
+*.tlog

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+    	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+    	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
+
+	<!-- JPA Configuration -->
+
+	<beans profile="default">
+
+		<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="transactionManager">
+			<property name="persistenceUnitName" value="org.jbpm.persistence.jpa" />
+			<property name="jpaProperties">
+				<props>
+					<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+					<prop key="hibernate.connection.autocommit">true</prop>
+					<prop key="hibernate.max_fetch_depth">3</prop>
+					<prop key="hibernate.hbm2ddl.auto">update</prop>
+					<prop key="hibernate.show_sql">false</prop>
+					<!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
+					<prop key="hibernate.id.new_generator_mappings">false</prop>
+					<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform</prop>
+					<prop key="hibernate.jta.UserTransaction">jta/usertransaction</prop>
+					<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				</props>
+			</property>
+		</bean>
+	</beans>
+
+
+	<beans profile="test">
+		<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="transactionManager">
+			<property name="persistenceXmlLocation" value="classpath:/META-INF/persistence.xml" />
+			<property name="jpaProperties">
+				<props>
+					<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+					<prop key="hibernate.max_fetch_depth">3</prop>
+					<prop key="hibernate.hbm2ddl.auto">update</prop>
+					<prop key="hibernate.show_sql">false</prop>
+					<!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
+					<prop key="hibernate.id.new_generator_mappings">false</prop>
+					<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.BitronixJtaPlatform</prop>
+				</props>
+			</property>
+		</bean>
+	</beans>
+
+
+</beans>

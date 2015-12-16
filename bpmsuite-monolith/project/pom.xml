@@ -59,7 +59,7 @@
 				<groupId>com.rhc</groupId>
 				<artifactId>bpmsuite-monolith-knowledge</artifactId>
 				<version>${project.version}</version>
-			</dependency>			
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -81,5 +81,16 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>rhcbap-nexus</id>
+			<url>http://nexus-rhcbap.rhcloud.com/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>rhcbap-nexus</id>
+			<url>http://nexus-rhcbap.rhcloud.com/nexus/content/repositories/releases/</url>
+		</repository>
+	</distributionManagement>
 
 </project>
