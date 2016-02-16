@@ -55,6 +55,7 @@
 		<property name="managerFactory" ref="runtimeManagerFactory" />
 		<property name="identityProvider" ref="identityProvider" />
 		<property name="runtimeDataService" ref="runtimeDataService" />
+		<property name="executorService" ref="executorService" />
 	</bean>
 
 	<bean id="data" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" depends-on="deploymentService">
