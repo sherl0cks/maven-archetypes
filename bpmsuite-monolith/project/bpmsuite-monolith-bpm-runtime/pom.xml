@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.rhc</groupId>
 		<artifactId>bpmsuite-monolith</artifactId>
-		<version>6.2.0-SNAPSHOT</version>
+		<version>6.2.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>bpmsuite-monolith-bpm-runtime</artifactId>
