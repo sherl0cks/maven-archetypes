@@ -7,9 +7,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieServices;
 
+import com.rhc.aggregates.Customer;
 import com.rhc.services.AbstractBusinessServicesTest;
 
 public class CustomerServiceTest extends AbstractBusinessServicesTest{
+	
+	
 	
 	@BeforeClass
 	public static void init(){
@@ -22,8 +25,11 @@ public class CustomerServiceTest extends AbstractBusinessServicesTest{
 		// given
 		Assert.assertNotNull(customerService);
 		
+		Customer customer = new Customer();
+		customer.setFirstName("Steve");
+		customer.setLastName("Martins");
 		// when 
-		Long processId = customerService.startCustomerOnboardProcess("Leia", "Organa");
+		Long processId = customerService.startCustomerOnboardProcess(customer);
 		
 		// then
 		Assert.assertEquals( new Long(1), processId);
